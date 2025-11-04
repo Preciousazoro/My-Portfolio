@@ -2,6 +2,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { toast } from "sonner";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { FaFacebookF, FaTwitter, FaInstagram, FaWhatsapp, FaUser, FaAward, FaHeadset, FaCheckCircle } from "react-icons/fa";
@@ -55,13 +57,14 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 
     {/* COPYRIGHT */}
     <p className="text-center text-xs text-gray-500 tracking-wide mt-16">
-      © ULTRA CODE. All rights reserved
+      ULTRA CODE. All rights reserved
     </p>
   </div>
 </footer>
 
 
 export default function Home() {
+  const [loading, setLoading] = useState(false);
   // Smooth scroll function
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -96,7 +99,7 @@ export default function Home() {
               <div
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`relative rotate-[-90deg] ${
+                className={`relative -rotate-90 ${
                   item.label === "Home"
                     ? "text-[#ff004f] font-bold"
                     : "text-gray-400 hover:text-white"
@@ -260,17 +263,20 @@ export default function Home() {
             </div>
           </div>
 
-          <button className="bg-[#ff004f] text-white px-6 py-3 rounded-md font-semibold flex items-center justify-center gap-2 hover:bg-[#e60047] transition">
+          <Link 
+            href="#contact" 
+            className="bg-[#ff004f] text-white px-6 py-3 rounded-md font-semibold flex items-center justify-center gap-2 hover:bg-[#e60047] transition"
+          >
             <FaUser className="w-4 h-4" />
             Contact me
-          </button>
+          </Link>
         </div>
       </section>
 
 
       {/* ===== Qualifications Section ===== */}
       <section
-        id="qualifications"
+        id="skills"
         className="flex flex-col items-center justify-center px-8 md:px-24 py-20 md:ml-24 bg-black text-white"
       >
         {/* Section Header */}
@@ -427,7 +433,7 @@ export default function Home() {
 
           {/* ===== Portfolio Section (Animated) ===== */}
         <section
-          id="portfolio"
+          id="work"
           className="flex flex-col items-center justify-center px-8 md:px-24 py-20 md:ml-24 bg-black text-white"
         >
           {/* React State for Modal */}
@@ -812,101 +818,172 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* RIGHT SIDE – CONTACT FORM */}
-            <motion.form
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="flex flex-col gap-6"
+
+
+ <motion.form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+          const res = await fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+
+          if (res.ok) {
+            toast.success("✅ Message sent successfully!");
+            form.reset();
+          } else {
+            toast.error("❌ Failed to send message. Please try again.");
+          }
+        } catch (error) {
+          toast.error("⚠️ Something went wrong. Please try again later.");
+        } finally {
+          setLoading(false);
+        }
+      }}
+      initial={{ opacity: 0, x: 40 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      className="flex flex-col gap-6"
+    >
+      <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        required
+        className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
+      />
+
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        required
+        className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
+      />
+
+      <input
+        type="text"
+        name="phone"
+        placeholder="Phone"
+        className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
+      />
+
+      <textarea
+        rows={6}
+        name="message"
+        placeholder="Message"
+        required
+        className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
+      ></textarea>
+
+      <button
+        type="submit"
+        disabled={loading}
+        className={`mt-4 bg-[#ff004f] text-white px-8 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 w-fit ${
+          loading ? "opacity-70 cursor-not-allowed" : "hover:bg-[#e10046]"
+        }`}
+      >
+        {loading ? (
+          <>
+            <svg
+              className="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
             >
-              <input
-                type="text"
-                placeholder="Username"
-                className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
-              />
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
+              ></path>
+            </svg>
+            Sending...
+          </>
+        ) : (
+          <>
+            <i className="ri-send-plane-fill"></i> Send Message
+          </>
+        )}
+      </button>
+    </motion.form>
+  );
 
-              <input
-                type="email"
-                placeholder="Email"
-                className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
-              />
 
-              <input
-                type="text"
-                placeholder="Phone"
-                className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
-              />
 
-              <textarea
-                rows={6}
-                placeholder="Message"
-                className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
-              ></textarea>
 
-              <button
-                type="submit"
-                className="mt-4 bg-[#ff004f] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#e10046] transition-all flex items-center gap-2 w-fit"
-              >
-                <i className="ri-send-plane-fill"></i> Send Message
-              </button>
-            </motion.form>
+                    </div>
+                </section>
+
+
+
+        {/* ===== Footer ===== */}
+        <footer className="w-full bg-black text-white mt-24 border-t border-gray-800 py-16">
+          <div className="max-w-7xl mx-auto px-8 md:px-24 relative">
+
+            {/* ===== SOCIAL ICONS (TOP RIGHT) ===== */}
+            <div className="absolute right-8 md:right-24 top-0 flex items-center gap-6 text-2xl">
+              <a href="#" className="hover:text-[#ff004f] transition">
+                <Facebook className="w-6 h-6" />
+              </a>
+              <a href="#" className="hover:text-[#ff004f] transition">
+                <Instagram className="w-6 h-6" />
+              </a>
+              <a href="#" className="hover:text-[#ff004f] transition">
+                <Twitter className="w-6 h-6" />
+              </a>
+            </div>
+
+            {/* ===== FOOTER GRID ===== */}
+            <div className="grid grid-cols-1 md:grid-cols-3 items-center text-center md:text-left gap-10">
+
+              {/* LEFT — NAME + ROLE */}
+              <div>
+                <h2 className="text-4xl font-extrabold tracking-wide">MR PRESH</h2>
+                <p className="text-gray-400 text-base font-medium mt-1">
+                  Full Stack Developer
+                </p>
+              </div>
+
+              {/* CENTER — NAVIGATION */}
+              <ul className="flex justify-center gap-10 text-lg font-semibold">
+                <li>
+                  <a href="#services" className="hover:text-[#ff004f] transition">Services</a>
+                </li>
+                <li>
+                  <a href="#portfolio" className="hover:text-[#ff004f] transition">Work</a>
+                </li>
+                <li>
+                  <a href="#contact" className="hover:text-[#ff004f] transition">Contact</a>
+                </li>
+              </ul>
+
+              {/* EMPTY COLUMN — ensures perfect centering */}
+              <div></div>
+            </div>
+
+            {/* COPYRIGHT */}
+            <p className="text-center text-xs text-gray-500 tracking-wide mt-16">
+              © ULTRA CODE. All rights reserved
+            </p>
           </div>
-        </section>
-
-
-
-{/* ===== Footer ===== */}
-<footer className="w-full bg-black text-white mt-24 border-t border-gray-800 py-16">
-  <div className="max-w-7xl mx-auto px-8 md:px-24 relative">
-
-    {/* ===== SOCIAL ICONS (TOP RIGHT) ===== */}
-    <div className="absolute right-8 md:right-24 top-0 flex items-center gap-6 text-2xl">
-      <a href="#" className="hover:text-[#ff004f] transition">
-        <Facebook className="w-6 h-6" />
-      </a>
-      <a href="#" className="hover:text-[#ff004f] transition">
-        <Instagram className="w-6 h-6" />
-      </a>
-      <a href="#" className="hover:text-[#ff004f] transition">
-        <Twitter className="w-6 h-6" />
-      </a>
-    </div>
-
-    {/* ===== FOOTER GRID ===== */}
-    <div className="grid grid-cols-1 md:grid-cols-3 items-center text-center md:text-left gap-10">
-
-      {/* LEFT — NAME + ROLE */}
-      <div>
-        <h2 className="text-4xl font-extrabold tracking-wide">MR PRESH</h2>
-        <p className="text-gray-400 text-base font-medium mt-1">
-          Full Stack Developer
-        </p>
-      </div>
-
-      {/* CENTER — NAVIGATION */}
-      <ul className="flex justify-center gap-10 text-lg font-semibold">
-        <li>
-          <a href="#services" className="hover:text-[#ff004f] transition">Services</a>
-        </li>
-        <li>
-          <a href="#portfolio" className="hover:text-[#ff004f] transition">Work</a>
-        </li>
-        <li>
-          <a href="#contact" className="hover:text-[#ff004f] transition">Contact</a>
-        </li>
-      </ul>
-
-      {/* EMPTY COLUMN — ensures perfect centering */}
-      <div></div>
-    </div>
-
-    {/* COPYRIGHT */}
-    <p className="text-center text-xs text-gray-500 tracking-wide mt-16">
-      © ULTRA CODE. All rights reserved
-    </p>
-  </div>
-</footer>
+        </footer>
 
     </main>
   );
