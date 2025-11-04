@@ -205,7 +205,7 @@ export default function Home() {
       {/* ===== About Section ===== */}
       <section
         id="about"
-        className="flex flex-col md:flex-row items-center justify-between px-8 md:px-24 py-20 md:ml-24 min-h-screen bg-black"
+        className="flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-24 py-12 sm:py-16 md:py-20 md:ml-24 min-h-screen bg-black"
       >
         {/* Left Image */}
        <div className="hidden md:relative md:block w-[280px] h-[400px] md:w-[360px] md:h-[500px] mb-10 md:mb-0">
@@ -361,7 +361,7 @@ export default function Home() {
       {/* ===== Experience / Abilities Section ===== */}
       <section
         id="experience"
-        className="flex flex-col items-center justify-center px-8 md:px-24 py-20 md:ml-24 bg-[#0a0a0a] text-white"
+        className="flex flex-col items-center justify-center px-4 sm:px-8 md:px-24 py-12 sm:py-16 md:py-20 md:ml-24 bg-[#0a0a0a] text-white"
       >
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -432,7 +432,7 @@ export default function Home() {
       {/* ===== Portfolio Section (Animated) ===== */}
         <section
           id="work"
-          className="flex flex-col items-center justify-center px-8 md:px-24 py-20 md:ml-24 bg-black text-white"
+          className="flex flex-col items-center justify-center px-4 sm:px-8 md:px-24 py-12 sm:py-16 md:py-20 md:ml-24 bg-black text-white"
         >
           {/* React State for Modal */}
           {typeof window !== "undefined" && (
@@ -648,7 +648,7 @@ export default function Home() {
       {/* ===== Services Section ===== */}
       <section
         id="services"
-        className="flex flex-col items-center justify-center px-8 md:px-24 py-24 md:ml-24 bg-black text-white"
+        className="flex flex-col items-center justify-center px-4 sm:px-8 md:px-24 py-12 sm:py-16 md:py-24 md:ml-24 bg-black text-white"
       >
         {/* Header */}
         <motion.div
@@ -736,7 +736,7 @@ export default function Home() {
       {/* ===== Contact Section ===== */}
         <section
           id="contact"
-          className="flex flex-col items-center justify-center px-8 md:px-24 py-24 md:ml-24 bg-black text-white"
+          className="flex flex-col items-center justify-center px-4 sm:px-8 md:px-24 py-12 sm:py-16 md:py-24 md:ml-24 bg-black text-white"
         >
           {/* Header */}
           <motion.div
@@ -928,7 +928,7 @@ export default function Home() {
 
 
       {/* ===== Footer ===== */}
-        <footer className="w-full bg-black text-white mt-24 border-t border-gray-800 py-16">
+  <footer className="w-full bg-black text-white mt-10 sm:mt-16 md:mt-24 border-t border-gray-800 py-12 md:py-16">
   <div className="max-w-7xl mx-auto px-8 md:px-24 relative">
     {/* ===== SOCIAL ICONS (TOP RIGHT on desktop) ===== */}
     <div className="hidden md:flex absolute right-8 md:right-24 top-0 items-center gap-6 text-2xl">
