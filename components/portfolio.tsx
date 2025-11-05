@@ -1,25 +1,85 @@
         "use client"
         
-        import { motion } from "framer-motion"
+        import { motion, AnimatePresence } from "framer-motion"
         import Image from "next/image"
-        import { useState } from "react"
+        import { useState, useEffect } from "react"
+        import { X } from "lucide-react"
         
         export default function Portfolio() {
           const [selectedProject, setSelectedProject] = useState<any>(null);
-          return (
-           
-            <section
-          id="work"
-          className="flex flex-col items-center justify-center px-4 sm:px-8 md:px-24 py-12 sm:py-16 md:py-20 md:ml-24 bg-black text-white"
-        >
-          {/* React State for Modal */}
-          {typeof window !== "undefined" && (
-            <></>
-          )}
-          {/* State Hook */}
-          {/* Place this at the top of your component in your final code:
-              const [selectedProject, setSelectedProject] = useState<any>(null);
-          */}
+          // Close modal when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (selectedProject && !target.closest('.modal-content')) {
+        setSelectedProject(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [selectedProject]);
+
+  return (
+    <section
+      id="work"
+      className="relative flex flex-col items-center justify-center px-4 sm:px-8 md:px-24 py-12 sm:py-16 md:py-20 md:ml-24 bg-black text-white"
+    >
+      {/* Project Modal */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div 
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedProject(null)}
+          >
+            <motion.div 
+              className="modal-content relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-transparent rounded-lg"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button 
+                onClick={() => setSelectedProject(null)}
+                className="absolute -top-10 right-0 text-white hover:text-[#ff004f] transition-colors"
+                aria-label="Close modal"
+              >
+                <X size={32} />
+              </button>
+              <div className="relative w-full aspect-video bg-black/50 rounded-t-lg overflow-hidden">
+                <Image
+                  src={selectedProject.image}
+                  alt={selectedProject.title}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <div className="p-6 bg-black/50 backdrop-blur-sm rounded-b-lg">
+                <h3 className="text-2xl font-bold mb-2">{selectedProject.title}</h3>
+                <p className="text-gray-300 mb-4">{selectedProject.description}</p>
+                <div className="flex flex-wrap gap-4 text-sm text-gray-400">
+                  <span>📅 {selectedProject.date}</span>
+                  <span>🛠️ {selectedProject.tech}</span>
+                  <span>👨‍💻 {selectedProject.role}</span>
+                </div>
+                {selectedProject.link && (
+                  <a 
+                    href={selectedProject.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-block px-6 py-2 bg-[#ff004f] text-white rounded-md hover:bg-[#ff3366] transition-colors"
+                  >
+                    View Project
+                  </a>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
           {/* Section Header */}
           <motion.div

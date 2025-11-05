@@ -1,5 +1,7 @@
 "use client"
 
+import { FaGraduationCap, FaLaptopCode, FaCalendarAlt, FaMapMarkerAlt, FaAward } from 'react-icons/fa';
+import { SiUdemy } from 'react-icons/si';
 
 export default function QualificationSection() {
   return (
@@ -19,7 +21,7 @@ export default function QualificationSection() {
           {/* ===== Education Column ===== */}
           <div>
             <h3 className="text-xl font-bold flex items-center gap-2 mb-8">
-              <span className="text-[#ff004f] text-lg">🎓</span> Education
+              <FaGraduationCap className="text-[#ff004f]" /> Education
             </h3>
 
             {/* Item 1 */}
@@ -32,7 +34,7 @@ export default function QualificationSection() {
                 BSc in Computer Science
               </p>
               <p className="text-[#ff004f] text-sm flex items-center gap-1 mt-2">
-                <span>📅</span> 2021 – 2025
+                <FaCalendarAlt className="text-[#ff004f]" /> 2021 – 2025
               </p>
             </div>
 
@@ -41,10 +43,10 @@ export default function QualificationSection() {
               <span className="absolute -left-[9px] top-1.5 w-4 h-4 bg-[#ff004f] rounded-full"></span>
               <h4 className="font-semibold text-lg">Udemy Course</h4>
               <p className="text-gray-400 text-sm mb-1">
-                Complete web development course
+                <FaAward className="text-[#ff004f]" /> Web Development course
               </p>
               <p className="text-[#ff004f] text-sm flex items-center gap-1 mt-2">
-                <span>📅</span> 2023 – 2024
+                <FaCalendarAlt className="text-[#ff004f]" /> 2023 – 2024
               </p>
             </div>
           </div>
@@ -52,7 +54,7 @@ export default function QualificationSection() {
           {/* ===== Experience Column ===== */}
           <div>
             <h3 className="text-xl font-bold flex items-center gap-2 mb-8">
-              <span className="text-[#ff004f] text-lg">💼</span> Experience
+              <FaLaptopCode className="text-[#ff004f]" /> Experience
             </h3>
 
             {/* Item 1 */}
