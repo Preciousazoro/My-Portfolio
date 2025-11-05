@@ -3,12 +3,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
+
+interface Service {
+  id: number;
+  title: string;
+  description: string;
+  icon: string;
+  details: string[];
+}
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { FaFacebookF, FaTwitter, FaInstagram, FaWhatsapp, FaUser, FaAward, FaHeadset, FaCheckCircle } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { Facebook, Instagram, Twitter } from "lucide-react";
+import UserNav from "../components/navview";
 
 {/* ===== Footer ===== */}
 <footer className="w-full bg-black text-white mt-24 border-t border-gray-800 py-16">
@@ -64,16 +73,72 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 
 
 export default function Home() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  // Smooth scroll function
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+
+  const services: Service[] = [
+    {
+      id: 1,
+      title: "Frontend Development",
+      description: "I build fast, responsive, and visually appealing interfaces using modern technologies like React, Next.js, and Tailwind CSS.",
+      icon: "ri-window-fill",
+      details: [
+        "Responsive web design",
+        "Single Page Applications (SPA) development",
+        "Progressive Web Apps (PWA)",
+        "UI/UX implementation",
+        "Performance optimization"
+      ]
+    },
+    {
+      id: 2,
+      title: "Backend Development",
+      description: "Clean, scalable backend systems with Node.js, Express, REST APIs, authentication, databases, and cloud deployments.",
+      icon: "ri-code-s-slash-line",
+      details: [
+        "RESTful API development",
+        "Database design & optimization",
+        "Authentication & authorization",
+        "Serverless architecture",
+        "API documentation"
+      ]
+    },
+    {
+      id: 3,
+      title: "Full-Stack Solutions",
+      description: "Complete end-to-end solutions — from UI/UX and APIs to database architecture, integrations, and deployment.",
+      icon: "ri-server-line",
+      details: [
+        "End-to-end web applications",
+        "Database architecture",
+        "Third-party integrations",
+        "CI/CD pipeline setup",
+        "Cloud deployment & scaling"
+      ]
+    }
+  ];
+
+  const openServiceModal = (service: Service) => {
+    setSelectedService(service);
+    setIsModalOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedService(null);
+    document.body.style.overflow = 'auto';
+  };
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
-
-  const [selectedProject, setSelectedProject] = useState<any>(null);
 
   return (
     <main className="flex flex-col bg-black text-white scroll-smooth">
@@ -161,13 +226,14 @@ export default function Home() {
           </p>
 
            <div>
-             <button
+             <Link
+              href="#about"
               className="inline-flex items-center gap-2 bg-[#ff004f] text-white px-5 py-2 rounded-md font-semibold hover:bg-[#e60047] transition"
               aria-label="More About me"
             >
               <FaUser className="w-4 h-4" />
               <span className="text-sm">More About me!</span>
-            </button>
+            </Link>
           </div>
 
           {/* Contact Info */}
@@ -664,70 +730,86 @@ export default function Home() {
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl w-full">
+          {services.map((service, index) => (
+            <motion.div
+              key={service.id}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="p-8 rounded-2xl bg-[#0f0f0f] border border-gray-800 hover:border-[#ff004f] hover:-translate-y-2 transition-all duration-500 flex flex-col h-full"
+            >
+              <div className="text-[#ff004f] text-3xl mb-6">
+                <i className={service.icon}></i>
+              </div>
+              <h3 className="text-xl font-bold mb-3">{service.title}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
+                {service.description}
+              </p>
+              <button 
+                onClick={() => openServiceModal(service)}
+                className="text-[#ff004f] font-semibold text-sm flex items-center gap-2 hover:gap-3 transition-all self-start"
+              >
+                View More <span>→</span>
+              </button>
+            </motion.div>
+          ))}
 
-          {/* Service 1 */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            className="p-8 rounded-2xl bg-[#0f0f0f] border border-gray-800 hover:border-[#ff004f] hover:-translate-y-2 transition-all duration-500"
-          >
-            <div className="text-[#ff004f] text-3xl mb-6">
-              {/* Replace with your icon */}
-              <i className="ri-window-fill"></i>
-            </div>
-            <h3 className="text-xl font-bold mb-3">Frontend Development</h3>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              I build fast, responsive, and visually appealing interfaces using modern
-              technologies like React, Next.js, and Tailwind CSS.
-            </p>
-            <span className="text-[#ff004f] font-semibold text-sm flex items-center gap-2">
-              View More <span>→</span>
-            </span>
-          </motion.div>
+          {/* Service Modal */}
+          {isModalOpen && selectedService && (
+            <div 
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              onClick={closeModal}
+            >
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button 
+                  onClick={closeModal}
+                  className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors"
+                  aria-label="Close modal"
+                >
+                  <i className="ri-close-line text-2xl"></i>
+                </button>
+                
+                <div className="flex items-start gap-6 mb-8">
+                  <div className="text-[#ff004f] text-4xl">
+                    <i className={selectedService.icon}></i>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold mb-2">{selectedService.title}</h3>
+                    <p className="text-gray-300">{selectedService.description}</p>
+                  </div>
+                </div>
 
-          {/* Service 2 */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            viewport={{ once: true }}
-            className="p-8 rounded-2xl bg-[#0f0f0f] border border-gray-800 hover:border-[#ff004f] hover:-translate-y-2 transition-all duration-500"
-          >
-            <div className="text-[#ff004f] text-3xl mb-6">
-              <i className="ri-code-s-slash-line"></i>
-            </div>
-            <h3 className="text-xl font-bold mb-3">Backend Development</h3>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Clean, scalable backend systems with Node.js, Express, REST APIs,
-              authentication, databases, and cloud deployments.
-            </p>
-            <span className="text-[#ff004f] font-semibold text-sm flex items-center gap-2">
-              View More <span>→</span>
-            </span>
-          </motion.div>
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold">What I offer:</h4>
+                  <ul className="space-y-2">
+                    {selectedService.details.map((detail, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <span className="text-[#ff004f] mt-1">•</span>
+                        <span className="text-gray-300">{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-          {/* Service 3 */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="p-8 rounded-2xl bg-[#0f0f0f] border border-gray-800 hover:border-[#ff004f] hover:-translate-y-2 transition-all duration-500"
-          >
-            <div className="text-[#ff004f] text-3xl mb-6">
-              <i className="ri-server-line"></i>
+                <div className="mt-8 pt-6 border-t border-gray-800">
+                  <p className="text-gray-400 mb-4">Interested in this service?</p>
+                  <Link 
+                    href="#contact" 
+                    onClick={closeModal}
+                    className="inline-flex items-center gap-2 bg-[#ff004f] text-white px-6 py-2.5 rounded-md font-semibold hover:bg-[#e60047] transition"
+                  >
+                    Get in Touch
+                  </Link>
+                </div>
+              </motion.div>
             </div>
-            <h3 className="text-xl font-bold mb-3">Full-Stack Solutions</h3>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Complete end-to-end solutions — from UI/UX and APIs to database
-              architecture, integrations, and deployment.
-            </p>
-            <span className="text-[#ff004f] font-semibold text-sm flex items-center gap-2">
-              View More <span>→</span>
-            </span>
-          </motion.div>
+          )}
 
         </div>
       </section>
@@ -817,111 +899,116 @@ export default function Home() {
             </div>
 
 
+                  <motion.form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setLoading(true);
 
- <motion.form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        setLoading(true);
+            const form = e.currentTarget;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
 
-        const form = e.currentTarget;
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
+            // Fire the request immediately
+            const sendPromise = fetch("/api/contact", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data),
+            });
 
-        try {
-          const res = await fetch("/api/contact", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-          });
+            // Short delay to show loader but keep UI fast
+            await new Promise((resolve) => setTimeout(resolve, 500));
 
-          if (res.ok) {
-            toast.success("✅ Message sent successfully!");
-            form.reset();
-          } else {
-            toast.error("❌ Failed to send message. Please try again.");
-          }
-        } catch (error) {
-          toast.error("⚠️ Something went wrong. Please try again later.");
-        } finally {
-          setLoading(false);
-        }
-      }}
-      initial={{ opacity: 0, x: 40 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-      className="flex flex-col gap-6"
-    >
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        required
-        className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
-      />
+            try {
+              const res = await sendPromise;
 
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        required
-        className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
-      />
-
-      <input
-        type="text"
-        name="phone"
-        placeholder="Phone"
-        className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
-      />
-
-      <textarea
-        rows={6}
-        name="message"
-        placeholder="Message"
-        required
-        className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
-      ></textarea>
-
-      <button
-          type="submit"
-          disabled={loading}
-          className={`mt-4 bg-[#ff004f] text-white px-8 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 w-full sm:w-fit ${
-            loading ? "opacity-70 cursor-not-allowed" : "hover:bg-[#e10046]"
-          }`}
+              if (res.ok) {
+                toast.success("✅ Message sent successfully!");
+                form.reset();
+              } else {
+                toast.error("❌ Failed to send message. Please try again.");
+              }
+            } catch (error) {
+              toast.error("⚠️ Something went wrong. Please try again later.");
+            } finally {
+              // Stop showing spinner quickly
+              setLoading(false);
+            }
+          }}
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="flex flex-col gap-6"
         >
-          {loading ? (
-            <>
-              <svg
-                className="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
-                ></path>
-              </svg>
-              Sending...
-            </>
-          ) : (
-            <>
-              <i className="ri-send-plane-fill"></i> Send Message
-            </>
-          )}
-        </button>
-    </motion.form>
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            required
+            className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
+          />
 
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
+          />
+
+          <input
+            type="text"
+            name="phone"
+            placeholder="Phone"
+            className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
+          />
+
+          <textarea
+            rows={6}
+            name="message"
+            placeholder="Message"
+            required
+            className="w-full p-4 bg-transparent border border-gray-700 rounded-lg text-white focus:border-[#ff004f] outline-none transition-all"
+          ></textarea>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`mt-4 bg-[#ff004f] text-white px-8 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 w-full sm:w-fit ${
+              loading ? "opacity-70 cursor-not-allowed" : "hover:bg-[#e10046]"
+            }`}
+          >
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
+                  ></path>
+                </svg>
+                Sending...
+              </>
+            ) : (
+              <>
+                <i className="ri-send-plane-fill"></i> Send Message
+              </>
+            )}
+          </button>
+        </motion.form>
 
         </div>
         </section>
@@ -989,6 +1076,7 @@ export default function Home() {
     </p>
   </div>
 </footer>
+
 
     </main>
   );
