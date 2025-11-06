@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider"; // shadcn theme provider
 import { Toaster } from "sonner"; // ✅ for toast notifications
-import UserNav from "@/components/navview"; // Import the navigation component
+import UserNav from "@/components/navview"; // Navigation
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,7 +17,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Precious Azoro | Portfolio",
-  description: "Fullstack Developer | Next.js • React • Node.js • Tailwind • Shadcn",
+  description:
+    "Fullstack Developer | Next.js • React • Node.js • Tailwind • Shadcn",
 };
 
 export default function RootLayout({
@@ -29,12 +30,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head />
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-[#0a0a0a] text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-[#0a0a0a] text-white transition-colors duration-300`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="dark" // ✅ force dark as default
+          enableSystem={false} // ✅ disable system mode
           disableTransitionOnChange
         >
           <Toaster
@@ -45,8 +46,14 @@ export default function RootLayout({
               style: { fontSize: "0.95rem", borderRadius: "0.5rem" },
             }}
           />
+          
+          {/* Global Navigation */}
           <UserNav />
-          <main className="min-h-screen bg-background pb-24 lg:pb-0">{children}</main>
+
+          {/* Main Content */}
+          <main className="min-h-screen bg-background pb-24 lg:pb-0">
+            {children}
+          </main>
         </ThemeProvider>
       </body>
     </html>
