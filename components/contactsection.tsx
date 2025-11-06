@@ -2,7 +2,7 @@
         
         import { motion } from 'framer-motion'
         import { useState } from 'react'
-        import toast from 'react-hot-toast'
+        import { toast } from 'sonner'
         
         export default function ContactSection() {
           const [loading, setLoading] = useState(false)
@@ -114,13 +114,13 @@
               const res = await sendPromise;
 
               if (res.ok) {
-                toast.success("✅ Message sent successfully!");
+                toast.success("Message sent successfully!");
                 form.reset();
               } else {
-                toast.error("❌ Failed to send message. Please try again.");
+                toast.error("Failed to send message. Please try again.");
               }
             } catch (error) {
-              toast.error("⚠️ Something went wrong. Please try again later.");
+              toast.error("Something went wrong. Please try again later.");
             } finally {
               // Stop showing spinner quickly
               setLoading(false);
