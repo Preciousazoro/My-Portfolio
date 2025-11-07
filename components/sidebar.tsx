@@ -67,7 +67,7 @@ export default function Sidebar() {
               >
                 <div className="h-12 w-12 rounded-full overflow-hidden shadow-lg shadow-[#ff004f]/30">
                   <img
-                    src="/MYPFP.png"
+                    src="https://i.postimg.cc/90ZV12RL/PFP-IMG.png"
                     alt="AZ Logo"
                     className="object-cover w-full h-full"
                   />
